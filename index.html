@@ -1,36 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iPod Interface</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>iPod Interface</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #draw-area {
+      width: 100vw;
+      height: 100vh;
+      background-color: #f0f0f0;
+      cursor: crosshair;
+      position: relative;
+    }
+    #song-table {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: sans-serif;
+      z-index: 10;
+      background: rgba(255,255,255,0.9);
+      border-collapse: collapse;
+    }
+    #song-table td {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+    }
+    #song-table tr.selected {
+      background-color: #007bff;
+      color: white;
+    }
+    #wheel {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #ccc;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      touch-action: none;
+    }
+    #center-button {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #eee;
+      border: 2px solid #aaa;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 11;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2em;
+      user-select: none;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="ipod">
-            <div class="screen">
-                <div class="screen-content active" id="page1" style="background-color: #CBCCC0;">
-                    <div class="text">MADMANINDUSTRIES</div>
-                </div>
-                <div class="screen-content" id="page2" style="background-color: #B7A596;">
-                    <div class="text">ANDREW</div>
-                </div>
-                <div class="screen-content" id="page3" style="background-color: #F2C954;">
-                    <div class="text">PRODUCTS</div>
-                </div>
-                <div class="screen-content" id="page4" style="background-color: #19181C;">
-                    <div class="text">PROJECTS</div>
-                </div>
-            </div>
-            <div class="controls">
-                <div class="button menu" id="menu-button">MENU</div>
-                <div class="button left" id="left-button">◀◀</div>
-                <div class="button right" id="right-button">▶▶</div>
-                <div class="button play" id="play-button">▶ ‖</div>
-            </div>
-        </div>
+  <div id="draw-area">
+    <table id="song-table">
+      <tbody>
+        <tr><td>sleep</td></tr>
+        <tr><td>Song B</td></tr>
+        <tr><td>Song C</td></tr>
+        <tr><td>Song D</td></tr>
+        <tr><td>Song E</td></tr>
+        <tr><td>Song F</td></tr>
+        <tr><td>Song G</td></tr>
+        <tr><td>Song H</td></tr>
+        <tr><td>Song I</td></tr>
+        <tr><td>Song J</td></tr>
+      </tbody>
+    </table>
+    <div id="wheel">
+      <div id="center-button">Play</div>
     </div>
-    <script src="js/script.js"></script>
+    <canvas id="canvas"></canvas>
+  </div>
+  <script src="js/script.js"></script>
 </body>
 </html>
