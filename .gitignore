@@ -1,0 +1,38 @@
+# ---- General Node / Web Dev ignores ----
+# Dependency directories
+node_modules/
+
+# Build / temp output
+build/
+dist/
+.tmp/
+tmp/
+
+# Logs
+logs/
+*.log
+
+# Environment & secrets
+.env
+*.env
+.env.*
+
+# IDE & editor settings
+.vscode/
+.idea/
+
+# macOS / Windows OS files
+.DS_Store
+Thumbs.db
+.Spotlight-V100/
+.Trashes/
+
+# Optional debug / coverage tooling
+coverage/
+.nyc_output/
+
+# ---- Project‑specific ignores ----
+# Exclude archived versions of the site
+archive/
+
+# End of .gitignore
