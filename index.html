@@ -13,15 +13,39 @@
     #draw-area {
       width: 100vw;
       height: 100vh;
-      background-color: #f0f0f0;
-      cursor: crosshair;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #ipod-bg {
+      width: 50vw;
+      height: auto;
+      object-fit: contain;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+    #ipod-screen {
+      position: absolute;
+      left: 50%;
+      top: 25%;
+      width: 320px;
+      height: 240px;
+      transform: translate(-50%, 0);
+      background: rgba(224,224,224,0.92);
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #song-table {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      width: 90%;
+      font-size: 0.95em;
       font-family: sans-serif;
       z-index: 10;
       background: rgba(255,255,255,0.9);
@@ -76,20 +100,24 @@
 </head>
 <body>
   <div id="draw-area">
-    <table id="song-table">
-      <tbody>
-        <tr><td>sleep</td></tr>
-        <tr><td>Song B</td></tr>
-        <tr><td>Song C</td></tr>
-        <tr><td>Song D</td></tr>
-        <tr><td>Song E</td></tr>
-        <tr><td>Song F</td></tr>
-        <tr><td>Song G</td></tr>
-        <tr><td>Song H</td></tr>
-        <tr><td>Song I</td></tr>
-        <tr><td>Song J</td></tr>
-      </tbody>
-    </table>
+    <img src="designassets/images/ipod_clear.jpg" alt="iPod" id="ipod-bg">
+    <div id="ipod-screen">
+      <table id="song-table">
+        <tbody>
+          <tr><td>aslongasyouacknowledgethedisconnect/10 Track 10.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/02 Track 2.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/03 Track 3.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/04 Track 4.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/06 Track 6.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/07 Track 7.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/09 Track 9.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/11 Track 11.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/guys i just dont think this song is us.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/jam 8.mp3</td></tr>
+          <tr><td>aslongasyouacknowledgethedisconnect/silly hats only.mp3</td></tr>
+        </tbody>
+      </table>
+    </div>
     <div id="wheel">
       <div id="center-button">Play</div>
     </div>

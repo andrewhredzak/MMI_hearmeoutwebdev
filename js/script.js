@@ -8,6 +8,21 @@ document.addEventListener('DOMContentLoaded', function () {
   let audio = null;
   let isPlaying = false;
 
+  // Song file paths in the same order as the table rows
+  const songFiles = [
+    "designassets/aslongasyouacknowledgethedisconnect/10 Track 10.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/02 Track 2.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/03 Track 3.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/04 Track 4.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/06 Track 6.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/07 Track 7.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/09 Track 9.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/11 Track 11.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/guys i just dont think this song is us.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/jam 8.mp3",
+    "designassets/aslongasyouacknowledgethedisconnect/silly hats only.mp3"
+  ];
+
   function highlight(index) {
     tableRows.forEach((row, i) => {
       row.classList.toggle("selected", i === index);
@@ -19,9 +34,21 @@ document.addEventListener('DOMContentLoaded', function () {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
+  // Only allow drawing inside the wheel
+  function isInsideWheel(x, y) {
+    const rect = wheel.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const r = rect.width / 2;
+    const dx = x - cx;
+    const dy = y - cy;
+    return dx * dx + dy * dy <= r * r;
+  }
+
   let drawing = false;
 
   canvas.addEventListener("mousedown", (e) => {
+    if (!isInsideWheel(e.clientX, e.clientY)) return;
     drawing = true;
     ctx.beginPath();
     ctx.moveTo(e.clientX, e.clientY);
@@ -29,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   canvas.addEventListener("mousemove", (e) => {
     if (!drawing) return;
+    if (!isInsideWheel(e.clientX, e.clientY)) return;
     ctx.lineTo(e.clientX, e.clientY);
     ctx.strokeStyle = "#333";
     ctx.lineWidth = 2;
@@ -36,8 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   canvas.addEventListener("mouseup", () => {
+    if (drawing) ctx.closePath();
     drawing = false;
-    ctx.closePath();
   });
 
   window.addEventListener("resize", () => {
@@ -85,24 +113,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (centerButton) {
     centerButton.addEventListener("click", function () {
-      // Only play/pause if the highlighted song is the first one ("sleep")
-      if (currentIndex === 0) {
-        if (!audio) {
-          audio = new Audio("designassets/aslongasyouacknowledgethedisconnect/10 Track 10.mp3");
-        }
-        if (isPlaying) {
+      // Play/pause the currently highlighted song
+      if (songFiles[currentIndex]) {
+        if (!audio || audio.src !== window.location.origin + "/" + songFiles[currentIndex].replace(/\\/g, '/')) {
+          if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+          }
+          audio = new Audio(songFiles[currentIndex]);
+          audio.play();
+          isPlaying = true;
+          centerButton.textContent = "Pause";
+          audio.onended = function() {
+            isPlaying = false;
+            centerButton.textContent = "Play";
+          };
+        } else if (isPlaying) {
           audio.pause();
+          isPlaying = false;
           centerButton.textContent = "Play";
         } else {
           audio.play();
+          isPlaying = true;
           centerButton.textContent = "Pause";
         }
-        isPlaying = !isPlaying;
-        // Reset button if song ends
-        audio.onended = function() {
-          isPlaying = false;
-          centerButton.textContent = "Play";
-        };
       }
     });
   }
