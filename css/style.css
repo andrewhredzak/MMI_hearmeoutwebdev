@@ -21,7 +21,7 @@ body{
   align-items:center;
   height:100vh;
   margin:0;
-  background:#cfd8dc;
+  background:#d2dccf;
 }
 /* ---------- iPod shell ---------- */
 #ipod{
@@ -42,18 +42,24 @@ body{
   border-radius:8px;
   overflow:hidden;
   position:relative;
+  display: flex; /* Make screen a flex container */
+  flex-direction: column; /* Arrange children vertically */
 }
 #screen-header{
   background:linear-gradient(#3c3f48,#1c1e22);
   color:#fff;
-  font-size:14px;
+  font-size:11px; /* Reduced from 14px */
   font-weight:700;
   padding:4px 8px;
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 #list{
   list-style:none;
   margin:0;
-  padding:8px 0;
+  padding: 20px 0 8px; /* Increased top padding to clear header */
+  height: 182px;
+  overflow-y:hidden; /* Hide scrollbar, scrolling managed by JS */
+  flex-shrink: 0; /* Prevent list from shrinking if it's the active view */
 }
 #list li{
   padding:6px 16px;
@@ -68,21 +74,91 @@ body{
   color:#fff;
 }
 #nowplaying{
-  display:none;
+  display:none; /* Initially hidden, JS will change to display:flex */
   padding:14px;
+  display: flex; 
+  flex-direction: column; /* Stack top section and progress bar vertically */
+  justify-content: space-between; /* Push progress bar to the bottom */
+  flex-grow: 1; /* Allow #nowplaying to fill available vertical space */
 }
+
+#np-top-section { /* New rule for the top section */
+  display: flex;
+  align-items: center;
+}
+
+#np-album-art {
+  width: 120px; /* Increased width */
+  height: 120px; /* Increased height */
+  margin-right: 10px; /* Add space between image and text */
+  object-fit: cover;
+  border: 1px solid #ccc;
+  flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+#np-text-info {
+  display: flex;
+  flex-direction: column; /* Stack title and artist vertically */
+  justify-content: center; /* Center text vertically if needed, or remove if top-alignment is preferred */
+  overflow: hidden; /* Prevent text from overflowing its container */
+  flex-grow: 1; /* Allow this container to grow and take available space */
+}
+
 #nowplaying h3{
   margin:0;
-  font-size:16px;
+  font-size:14px; /* Reduced from 16px */
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 #nowplaying p{
   margin:4px 0 0;
-  font-size:13px;
+  font-size:12px; /* Reduced from 13px */
   color:#333;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
 }
+
+#progress-container {
+  display: flex;
+  align-items: center;
+  width: 100%; 
+  margin-top: auto; /* Pushes the progress bar to the bottom if parent is flex column */
+  padding-top: 10px; /* Add some space above the progress bar */
+}
+
+#progress-bar {
+  flex-grow: 1;
+  height: 8px;
+  background-color: #ddd;
+  border-radius: 4px;
+  margin: 0 8px; /* Space around the progress bar */
+  overflow: hidden; /* Ensure fill stays within bounds */
+}
+
+#progress-bar-fill {
+  height: 100%;
+  width: 0%; /* Initial width */
+  background-color: var(--highlight); /* Use highlight color for fill */
+  border-radius: 4px;
+}
+
+#current-time,
+#remaining-time {
+  font-size: 11px;
+  color: #555;
+  min-width: 35px; /* Ensure enough space for time display */
+}
+
+#current-time {
+  text-align: left;
+}
+
+#remaining-time {
+  text-align: right;
+}
+
 /* ---------- wheel ---------- */
 #wheel{
   width:220px;
@@ -91,6 +167,7 @@ body{
   background:radial-gradient(circle at 50% 50%,#1d1d1d 0%,#000 70%);
   margin:32px auto 0;
   position:relative;
+  cursor: grab; /* Moved cursor style here */
 }
 #wheel .label{
   position:absolute;
@@ -102,16 +179,23 @@ body{
   pointer-events:none;
 }
 #label-menu{top:18px;}
-#label-prev,#label-next{
+
+#wheel #label-prev,
+#wheel #label-next{
   top:50%;
   transform:translateY(-50%);
   width:auto;
   font-size:18px;
-  pointer-events:none;
+  /* pointer-events:none; is inherited from #wheel .label */
 }
 #label-prev{left:18px;}
 #label-next{right:18px;}
-#label-play{bottom:18px;font-size:18px;}
+
+#wheel #label-play {
+  bottom:18px;
+  font-size:18px;
+}
+
 /* clickable hot‑zones (invisible) */
 .hot{
   position:absolute;
@@ -133,6 +217,7 @@ body{
   background:linear-gradient(145deg,#d8d8d8,#f9f9f9);
   box-shadow:inset 0 2px 4px rgba(0,0,0,.25);
   cursor:pointer;
+  z-index: 2; /* Ensure center button is above the wheel overlay */
 }
 /* wheel overlay for rotation */
 #wheel-overlay{
@@ -142,5 +227,5 @@ body{
   width:100%;
   height:100%;
   border-radius:50%;
-  cursor:grab;
+  pointer-events: none; /* Allow clicks and drags to pass through */
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>iPod Classic – Web App</title>
+  <title>MadMadIndustries – iPod</title>
   <!-- external stylesheet -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -13,8 +13,20 @@
       <div id="screen-header">Music</div>
       <ul id="list"></ul>
       <div id="nowplaying">
-        <h3 id="np-title"></h3>
-        <p id="np-artist"></p>
+        <div id="np-top-section">
+          <img id="np-album-art" src="" alt="Album Art" />
+          <div id="np-text-info">
+            <h3 id="np-title"></h3>
+            <p id="np-artist"></p>
+          </div>
+        </div>
+        <div id="progress-container">
+          <span id="current-time">0:00</span>
+          <div id="progress-bar">
+            <div id="progress-bar-fill"></div>
+          </div>
+          <span id="remaining-time">-0:00</span>
+        </div>
       </div>
     </div>
 
