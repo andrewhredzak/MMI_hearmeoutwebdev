@@ -1,143 +1,192 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  const wheel = document.getElementById("wheel");
-  const tableRows = document.querySelectorAll("#song-table tr");
-  const centerButton = document.getElementById("center-button");
-  let currentIndex = 0;
-  let audio = null;
-  let isPlaying = false;
-
-  // Song file paths in the same order as the table rows
-  const songFiles = [
-    "designassets/aslongasyouacknowledgethedisconnect/10 Track 10.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/02 Track 2.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/03 Track 3.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/04 Track 4.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/06 Track 6.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/07 Track 7.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/09 Track 9.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/11 Track 11.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/guys i just dont think this song is us.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/jam 8.mp3",
-    "designassets/aslongasyouacknowledgethedisconnect/silly hats only.mp3"
+// -----------------------------------------------------------
+// iPod Classic – Interaction Logic
+// -----------------------------------------------------------
+(() => {
+  // Royalty‑free sample tracks – replace with your own MP3s.
+  const songs = [
+    {
+      title: "Track 2",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/Iregrettoinformyou.mp3",
+    },
+    {
+      title: "Track 3",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/03 Track 3.mp3",
+    },
+    {
+      title: "Track 4",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/04 Track 4.mp3",
+    },
+    {
+      title: "Track 6",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/06 Track 6.mp3",
+    },
+    {
+      title: "Track 7",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/07 Track 7.mp3",
+    },
+    {
+      title: "Track 9",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/09 Track 9.mp3",
+    },
+    {
+      title: "Track 10",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/10 Track 10.mp3",
+    },
+    {
+      title: "Track 11",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/11 Track 11.mp3",
+    },
+    {
+      title: "guys i just dont think this song is us",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/guys i just dont think this song is us.mp3",
+    },
+    {
+      title: "jam 8",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/jam 8.mp3",
+    },
+    {
+      title: "silly hats only",
+      artist: "aslongasyouacknowledgethedisconnect",
+      src: "designassets/aslongasyouacknowledgethedisconnect/silly hats only.mp3",
+    },
   ];
+  /* --- DOM refs --- */
+  const listEl = document.getElementById("list");
+  const npTitle = document.getElementById("np-title");
+  const npArtist = document.getElementById("np-artist");
+  const nowplaying = document.getElementById("nowplaying");
+  const header = document.getElementById("screen-header");
+  const audio = document.getElementById("audio");
 
-  function highlight(index) {
-    tableRows.forEach((row, i) => {
-      row.classList.toggle("selected", i === index);
+  /* --- state --- */
+  let index = 0; // highlighted row in menu
+  let depth = 0; // 0 = list, 1 = now‑playing
+  let dragging = false,
+    lastAngle = null,
+    accum = 0;
+
+  /* --- rendering helpers --- */
+  function renderList() {
+    listEl.innerHTML = "";
+    songs.forEach((s, i) => {
+      const li = document.createElement("li");
+      li.textContent = s.title;
+      if (i === index) li.classList.add("active");
+      listEl.appendChild(li);
     });
+    header.textContent = "Music";
   }
-
-  highlight(currentIndex);
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  // Only allow drawing inside the wheel
-  function isInsideWheel(x, y) {
-    const rect = wheel.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const r = rect.width / 2;
-    const dx = x - cx;
-    const dy = y - cy;
-    return dx * dx + dy * dy <= r * r;
+  function showNowPlaying() {
+    const s = songs[index];
+    npTitle.textContent = s.title;
+    npArtist.textContent = s.artist;
+    listEl.style.display = "none";
+    nowplaying.style.display = "block";
+    header.textContent = "Now Playing";
+    depth = 1;
   }
-
-  let drawing = false;
-
-  canvas.addEventListener("mousedown", (e) => {
-    if (!isInsideWheel(e.clientX, e.clientY)) return;
-    drawing = true;
-    ctx.beginPath();
-    ctx.moveTo(e.clientX, e.clientY);
-  });
-
-  canvas.addEventListener("mousemove", (e) => {
-    if (!drawing) return;
-    if (!isInsideWheel(e.clientX, e.clientY)) return;
-    ctx.lineTo(e.clientX, e.clientY);
-    ctx.strokeStyle = "#333";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  });
-
-  canvas.addEventListener("mouseup", () => {
-    if (drawing) ctx.closePath();
-    drawing = false;
-  });
-
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-
-  // Wheel scroll functionality
-  let lastAngle = null;
-  let scrollDelta = 0;
-
-  function getAngle(x, y, cx, cy) {
-    return Math.atan2(y - cy, x - cx);
+  function showMenu() {
+    nowplaying.style.display = "none";
+    listEl.style.display = "block";
+    depth = 0;
+    header.textContent = "Music";
   }
+  renderList();
 
+  /* --- wheel rotation --- */
+  const wheel = document.getElementById("wheel-overlay");
   wheel.addEventListener("mousedown", (e) => {
-    const rect = wheel.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    function onMove(eMove) {
-      const angle = getAngle(eMove.clientX, eMove.clientY, cx, cy);
-      if (lastAngle !== null) {
-        let delta = angle - lastAngle;
-        if (delta > Math.PI) delta -= 2 * Math.PI;
-        if (delta < -Math.PI) delta += 2 * Math.PI;
-        scrollDelta += delta * 10;
-        if (Math.abs(scrollDelta) >= 1) {
-          const direction = scrollDelta > 0 ? -1 : 1;
-          currentIndex = (currentIndex + direction + tableRows.length) % tableRows.length;
-          highlight(currentIndex);
-          scrollDelta = 0;
-        }
-      }
-      lastAngle = angle;
-    }
-    function onUp() {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      lastAngle = null;
-      scrollDelta = 0;
-    }
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
+    dragging = true;
+    lastAngle = getAngle(e);
+    wheel.style.cursor = "grabbing";
   });
-
-  if (centerButton) {
-    centerButton.addEventListener("click", function () {
-      // Play/pause the currently highlighted song
-      if (songFiles[currentIndex]) {
-        if (!audio || audio.src !== window.location.origin + "/" + songFiles[currentIndex].replace(/\\/g, '/')) {
-          if (audio) {
-            audio.pause();
-            audio.currentTime = 0;
-          }
-          audio = new Audio(songFiles[currentIndex]);
-          audio.play();
-          isPlaying = true;
-          centerButton.textContent = "Pause";
-          audio.onended = function() {
-            isPlaying = false;
-            centerButton.textContent = "Play";
-          };
-        } else if (isPlaying) {
-          audio.pause();
-          isPlaying = false;
-          centerButton.textContent = "Play";
-        } else {
-          audio.play();
-          isPlaying = true;
-          centerButton.textContent = "Pause";
-        }
+  window.addEventListener("mouseup", () => {
+    dragging = false;
+    lastAngle = null;
+    accum = 0;
+    wheel.style.cursor = "grab";
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging || depth !== 0) return; // scroll only in menu
+    const ang = getAngle(e);
+    if (lastAngle !== null) {
+      let delta = ang - lastAngle;
+      if (delta > 180) delta -= 360;
+      if (delta < -180) delta += 360;
+      accum += delta;
+      if (Math.abs(accum) > 25) {
+        index = accum > 0 ? (index + 1) % songs.length : (index - 1 + songs.length) % songs.length;
+        accum = 0;
+        renderList();
       }
-    });
+    }
+    lastAngle = ang;
+  });
+  function getAngle(e) {
+    const r = wheel.getBoundingClientRect();
+    const cx = r.left + r.width / 2,
+      cy = r.top + r.height / 2;
+    return (Math.atan2(cy - e.clientY, e.clientX - cx) * 180) / Math.PI + 360 % 360;
   }
-});
+
+  /* --- playback helpers --- */
+  function loadAndPlay(idx) {
+    const s = songs[idx];
+    audio.src = s.src;
+    audio.play();
+    showNowPlaying();
+  }
+  function nextSong() {
+    index = (index + 1) % songs.length;
+    loadAndPlay(index);
+  }
+  function prevSong() {
+    index = (index - 1 + songs.length) % songs.length;
+    loadAndPlay(index);
+  }
+
+  /* --- button events --- */
+  // center button
+  document.getElementById("button-center").addEventListener("click", () => {
+    if (depth === 0) {
+      loadAndPlay(index);
+    } else {
+      // future: play/pause via center when in Now‑Playing
+    }
+  });
+  // menu hot‑zone
+  document.getElementById("hot-menu").addEventListener("click", showMenu);
+  // next / prev hot‑zones
+  document.getElementById("hot-next").addEventListener("click", () => {
+    if (depth === 0) {
+      index = (index + 1) % songs.length;
+      renderList();
+    } else {
+      nextSong();
+    }
+  });
+  document.getElementById("hot-prev").addEventListener("click", () => {
+    if (depth === 0) {
+      index = (index - 1 + songs.length) % songs.length;
+      renderList();
+    } else {
+      prevSong();
+    }
+  });
+  // play/pause hot‑zone
+  document.getElementById("hot-play").addEventListener("click", () => {
+    if (depth === 1) {
+      audio.paused ? audio.play() : audio.pause();
+    }
+  });
+})();

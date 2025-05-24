@@ -34,5 +34,6 @@ coverage/
 # ---- Project‑specific ignores ----
 # Exclude archived versions of the site
 archive/
+sandbox/
 
 # End of .gitignore
