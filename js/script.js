@@ -20,9 +20,9 @@
       src: "designassets/aslongasyouacknowledgethedisconnect/04 Track 4.mp3",
     },
     {
-      title: "Track 6",
+      title: "Bleeker",
       artist: "aslongasyouacknowledgethedisconnect",
-      src: "designassets/aslongasyouacknowledgethedisconnect/06 Track 6.mp3",
+      src: "designassets/aslongasyouacknowledgethedisconnect/Bleeker.mp3",
     },
     {
       title: "Track 7",
