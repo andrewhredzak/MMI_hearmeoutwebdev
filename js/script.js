@@ -232,7 +232,8 @@
     const r = wheelElement.getBoundingClientRect();
     const cx = r.left + r.width / 2,
       cy = r.top + r.height / 2;
-    return (Math.atan2(cy - e.clientY, e.clientX - cx) * 180) / Math.PI + 360 % 360;
+    // Ensure angle is normalized between 0 and 360 degrees.
+    return ((Math.atan2(cy - e.clientY, e.clientX - cx) * 180) / Math.PI + 360) % 360;
   }
 
   /* --- playback helpers --- */
