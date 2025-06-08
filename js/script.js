@@ -82,6 +82,8 @@
   const progressBarFill = document.getElementById("progress-bar-fill");
   const currentTimeEl = document.getElementById("current-time");
   const remainingTimeEl = document.getElementById("remaining-time");
+  const batteryLevelFillEl = document.getElementById("battery-level-fill"); // DOM ref for battery fill
+  const headerTitleTextEl = document.getElementById("header-title-text"); // DOM ref for header title text
 
   /* --- state --- */
   let currentView = "artists"; // artists, albums, songs, nowplaying
@@ -89,6 +91,10 @@
   let selectedAlbumIndex = 0;
   let selectedSongIndex = 0;
   let listScrollIndex = 0; // General purpose index for current list selection
+
+  let batteryLevel = 100; // Initial battery level
+  const batteryDepletionInterval = 300000 / 100; // 5 minutes / 100 steps = 3 seconds per 1% drop
+  let batteryIntervalId = null;
 
   let dragging = false,
     lastAngle = null,
@@ -98,19 +104,19 @@
   function renderList() {
     listEl.innerHTML = "";
     let currentListItems = [];
-    let currentHeader = "Music";
+    let currentHeaderTitle = "Music"; // Renamed variable for clarity
 
     nowplaying.style.display = "none";
     listEl.style.display = "block";
 
     if (currentView === "artists") {
-      currentHeader = "Artists";
+      currentHeaderTitle = "Artists";
       currentListItems = library.map((artist) => artist.artistName);
     } else if (currentView === "albums") {
-      currentHeader = library[selectedArtistIndex].artistName;
+      currentHeaderTitle = library[selectedArtistIndex].artistName;
       currentListItems = library[selectedArtistIndex].albums.map((album) => album.albumTitle);
     } else if (currentView === "songs") {
-      currentHeader = library[selectedArtistIndex].albums[selectedAlbumIndex].albumTitle;
+      currentHeaderTitle = library[selectedArtistIndex].albums[selectedAlbumIndex].albumTitle;
       currentListItems = library[selectedArtistIndex].albums[selectedAlbumIndex].songs.map((song) => song.title);
     }
 
@@ -121,7 +127,7 @@
       listEl.appendChild(li);
     });
 
-    header.textContent = currentHeader;
+    headerTitleTextEl.textContent = currentHeaderTitle; // Update only the title text
 
     // Scroll the list to keep the active item in view
     const activeLi = listEl.querySelector("li.active");
@@ -146,7 +152,7 @@
     npAlbumArt.src = "designassets/images/heremeout_pilot_redyellow.png";
     listEl.style.display = "none";
     nowplaying.style.display = "flex";
-    header.textContent = "Now Playing";
+    headerTitleTextEl.textContent = "Now Playing"; // Update only the title text
     currentView = "nowplaying";
   }
 
@@ -158,6 +164,28 @@
   }
   
   renderList(); // Initial render
+
+  /* --- Battery simulation --- */
+  function updateBatteryDisplay() {
+    batteryLevelFillEl.style.width = `${batteryLevel}%`;
+    if (batteryLevel <= 20) {
+      batteryLevelFillEl.style.backgroundColor = "red";
+    } else {
+      batteryLevelFillEl.style.backgroundColor = "green";
+    }
+  }
+
+  function simulateBattery() {
+    batteryLevel -= 1;
+    if (batteryLevel < 0) {
+      batteryLevel = 100; // Recharge
+    }
+    updateBatteryDisplay();
+  }
+
+  // Start battery simulation
+  updateBatteryDisplay(); // Initial display
+  batteryIntervalId = setInterval(simulateBattery, batteryDepletionInterval);
 
   /* --- Time formatting helper --- */
   function formatTime(seconds) {

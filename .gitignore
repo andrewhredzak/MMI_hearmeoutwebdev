@@ -35,5 +35,7 @@ coverage/
 # Exclude archived versions of the site
 archive/
 sandbox/
+resources/
+
 
 # End of .gitignore

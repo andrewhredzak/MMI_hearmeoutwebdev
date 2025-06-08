@@ -42,17 +42,59 @@ body{
   border-radius:8px;
   overflow:hidden;
   position:relative;
-  display: flex; /* Make screen a flex container */
-  flex-direction: column; /* Arrange children vertically */
+  display: flex; 
+  flex-direction: column; 
 }
 #screen-header{
   background:linear-gradient(#3c3f48,#1c1e22);
   color:#fff;
-  font-size:11px; /* Reduced from 14px */
+  font-size:11px; 
   font-weight:700;
   padding:4px 8px;
-  flex-shrink: 0; /* Prevent header from shrinking */
+  flex-shrink: 0; 
+  display: flex; /* Use flexbox to position title and battery */
+  justify-content: space-between; /* Space between title and battery */
+  align-items: center; /* Vertically align items */
 }
+
+#header-title-text {
+  flex-grow: 1; /* Allow title to take available space */
+}
+
+#battery-container {
+  display: flex;
+  align-items: center;
+}
+
+#battery-outline {
+  width: 20px; /* Adjust size as needed */
+  height: 10px; /* Adjust size as needed */
+  border: 1px solid #fff; /* White border for the battery */
+  border-radius: 2px;
+  position: relative;
+  margin-left: 5px; /* Space from the right edge of the header or title */
+}
+
+#battery-outline::after { /* Small nub on the battery */
+  content: '';
+  position: absolute;
+  right: -3px; /* Position to the right of the outline */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 4px;
+  background-color: #fff;
+  border-radius: 0 1px 1px 0;
+}
+
+#battery-level-fill {
+  height: 100%;
+  width: 100%; /* Initial full width */
+  background-color: green; /* Initial battery color */
+  border-radius: 1px; /* Slightly less than outline for inset look */
+  transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; /* Smooth transitions */
+}
+
 #list{
   list-style:none;
   margin:0;
@@ -172,7 +214,7 @@ body{
 #wheel .label{
   position:absolute;
   color:var(--wheel-text);
-  font-size:14px;
+  font-size:12px; /* Reduced from 14px */
   font-weight:600;
   text-align:center;
   width:100%;
@@ -185,7 +227,7 @@ body{
   top:50%;
   transform:translateY(-50%);
   width:auto;
-  font-size:18px;
+  font-size:16px; /* Reduced from 18px */
   /* pointer-events:none; is inherited from #wheel .label */
 }
 #label-prev{left:18px;}
@@ -193,7 +235,7 @@ body{
 
 #wheel #label-play {
   bottom:18px;
-  font-size:18px;
+  font-size:16px; /* Reduced from 18px */
 }
 
 /* clickable hot‑zones (invisible) */
