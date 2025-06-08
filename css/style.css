@@ -210,6 +210,7 @@ body{
   margin:32px auto 0;
   position:relative;
   cursor: grab; /* Moved cursor style here */
+  touch-action: none; /* Allow custom handling of touch drag */
 }
 #wheel .label{
   position:absolute;
@@ -270,4 +271,11 @@ body{
   height:100%;
   border-radius:50%;
   pointer-events: none; /* Allow clicks and drags to pass through */
+}
+
+@media (max-width: 400px) {
+  #ipod {
+    width: 90vw;
+    height: calc(90vw * 1.8);
+  }
 }

@@ -212,22 +212,25 @@
 
   /* --- wheel rotation --- */
   const wheelElement = document.getElementById("wheel");
-  wheelElement.addEventListener("mousedown", (e) => {
+
+  function startDrag(e) {
     if (e.target !== document.getElementById("button-center") && currentView !== "nowplaying") {
       dragging = true;
       lastAngle = getAngle(e);
       wheelElement.style.cursor = "grabbing";
     }
-  });
-  window.addEventListener("mouseup", () => {
+  }
+
+  function endDrag() {
     if (dragging) {
       dragging = false;
       lastAngle = null;
       accum = 0;
       wheelElement.style.cursor = "grab";
     }
-  });
-  window.addEventListener("mousemove", (e) => {
+  }
+
+  function moveDrag(e) {
     if (!dragging || currentView === "nowplaying") return;
     const ang = getAngle(e);
     if (lastAngle !== null) {
@@ -255,7 +258,12 @@
       }
     }
     lastAngle = ang;
-  });
+  }
+
+  // Pointer events for mouse and touch interaction
+  wheelElement.addEventListener("pointerdown", startDrag);
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointermove", moveDrag);
   function getAngle(e) {
     const r = wheelElement.getBoundingClientRect();
     const cx = r.left + r.width / 2,
