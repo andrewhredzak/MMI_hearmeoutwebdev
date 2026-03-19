@@ -31,6 +31,11 @@
               src: "designassets/aslongasyouacknowledgethedisconnect/04 Track 4.mp3",
             },
             {
+              title: "guys i just dont think this song is us",
+              artist: "Hear Me Out", // Corrected artist
+              src: "designassets/aslongasyouacknowledgethedisconnect/guys i just dont think this song is us.mp3",
+            },
+            {
               title: "Bleeker",
               artist: "Hear Me Out", // Corrected artist
               src: "designassets/aslongasyouacknowledgethedisconnect/Bleeker.mp3",
@@ -55,11 +60,7 @@
               artist: "Hear Me Out", // Corrected artist
               src: "designassets/aslongasyouacknowledgethedisconnect/11 Track 11.mp3",
             },
-            {
-              title: "guys i just dont think this song is us",
-              artist: "Hear Me Out", // Corrected artist
-              src: "designassets/aslongasyouacknowledgethedisconnect/guys i just dont think this song is us.mp3",
-            },
+
             {
               title: "jam 8",
               artist: "Hear Me Out", // Corrected artist
