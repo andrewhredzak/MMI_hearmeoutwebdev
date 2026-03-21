@@ -159,6 +159,7 @@
 
   function loadAndPlaySong() {
     const song = library[selectedArtistIndex].albums[selectedAlbumIndex].songs[selectedSongIndex];
+    listScrollIndex = selectedSongIndex;
     audio.src = song.src;
     audio.play();
     showNowPlaying();
@@ -209,6 +210,10 @@
       currentTimeEl.textContent = formatTime(audio.currentTime);
       remainingTimeEl.textContent = "-" + formatTime(audio.duration - audio.currentTime);
     }
+  });
+
+  audio.addEventListener("ended", () => {
+    nextSong();
   });
 
   /* --- wheel rotation --- */
