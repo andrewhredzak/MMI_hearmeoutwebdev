@@ -2,8 +2,12 @@
    iPod Classic – Stylesheet
    ----------------------------------------------------------- */
 :root{
-  --body-light:#f5f5f5;
-  --body-dark:#e8e8e8;
+  
+  --body-light:#696868;
+  --body-dark:#151515;
+  /*
+  --body-light: red;
+  --body-dark: blue;*/
   --bezel:#000;
   --wheel:#111;
   --wheel-text:#fff;
@@ -28,6 +32,7 @@ body{
   width:300px;
   height:540px;
   background:linear-gradient(145deg,var(--body-light) 0%,var(--body-dark) 100%);
+
   border-radius:32px;
   box-shadow:0 8px 16px rgba(0,0,0,.3);
   padding:26px 18px 32px;
@@ -257,7 +262,7 @@ body{
   width:80px;
   height:80px;
   border-radius:50%;
-  background:linear-gradient(145deg,#d8d8d8,#f9f9f9);
+  background:linear-gradient(145deg,#535252,#151515);
   box-shadow:inset 0 2px 4px rgba(0,0,0,.25);
   cursor:pointer;
   z-index: 2; /* Ensure center button is above the wheel overlay */
