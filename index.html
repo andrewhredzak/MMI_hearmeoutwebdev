@@ -1,68 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ipod Classic</title> <!-- Title of the webpage in tab -->
-  <link rel="icon" type="image/png" href="designassets/images/ev_antenna_favicon.png"> <!-- Favicon link -->
-  <!-- external stylesheet -->
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e9e6df">
+  <meta name="description" content="Hear Me Out — As Long As You Acknowledge The Disconnect. One record, loaded onto a little classic music player.">
+  <title>Hear Me Out — As Long As You Acknowledge The Disconnect</title>
+  <link rel="icon" type="image/png" href="designassets/images/ev_antenna_favicon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js" defer></script>
 </head>
 <body>
-  <div id="ipod">
-    <div id="screen">
-      <div id="screen-header">
-        <span id="header-title-text">Music</span> <!-- Wrapper for the title -->
-        <div id="battery-container"> <!-- Container for the battery icon -->
-          <div id="battery-outline">
-            <div id="battery-level-fill"></div>
+  <main class="listening-room">
+    <section class="device-stage" aria-label="Classic music player">
+      <div id="ipod">
+        <div class="top-edge" aria-hidden="true"></div>
+
+        <div id="screen" tabindex="0" aria-label="iPod screen">
+          <div id="screen-header">
+            <span id="header-title-text">iPod</span>
+            <div class="screen-indicators" aria-hidden="true">
+              <span id="playback-icon"></span>
+              <span id="battery-container"><span id="battery-outline"><span id="battery-level-fill"></span></span></span>
+            </div>
           </div>
+
+          <ul id="list" role="menu" aria-label="Music library"></ul>
+
+          <div id="nowplaying" hidden>
+            <div class="np-meta"><span id="track-count">1 of 11</span><span id="playback-state">Paused</span></div>
+            <div id="np-top-section">
+              <img id="np-album-art" src="designassets/images/heremeout_pilot_redyellow.png" alt="As Long As You Acknowledge The Disconnect album artwork" width="76" height="76">
+              <div id="np-text-info">
+                <h2 id="np-title"></h2>
+                <p id="np-artist">Hear Me Out</p>
+                <p id="np-album">As Long As You Acknowledge The Disconnect</p>
+              </div>
+            </div>
+            <div id="progress-container">
+              <input id="progress" type="range" min="0" max="1000" step="1" value="0" aria-label="Playback position">
+              <div class="time-labels"><span id="current-time">0:00</span><span id="remaining-time">−0:00</span></div>
+            </div>
+          </div>
+
+          <div id="adjustment" hidden>
+            <span id="adjustment-label">Volume</span>
+            <div class="volume-control"><span aria-hidden="true">−</span><input id="volume" type="range" min="0" max="100" step="1" value="75" aria-label="Volume"><span aria-hidden="true">+</span></div>
+          </div>
+          <div id="screen-message" hidden></div>
+        </div>
+
+        <div id="wheel" tabindex="0" role="group" aria-label="Click wheel. Rotate or scroll to navigate. Use arrow keys to move and Enter to select.">
+          <div class="wheel-ring" aria-hidden="true"></div>
+          <button id="hot-menu" class="hot" type="button" aria-label="Menu"><span class="label">MENU</span></button>
+          <button id="hot-prev" class="hot" type="button" aria-label="Previous track"><svg class="label transport-icon" viewBox="0 0 26 18" aria-hidden="true"><path d="M3 3h2v12H3zM15 3v12L5 9zm10 0v12L15 9z"/></svg></button>
+          <button id="hot-next" class="hot" type="button" aria-label="Next track"><svg class="label transport-icon" viewBox="0 0 26 18" aria-hidden="true"><path d="M21 3h2v12h-2zM1 3l10 6L1 15zm10 0l10 6-10 6z"/></svg></button>
+          <button id="hot-play" class="hot" type="button" aria-label="Play or pause"><svg class="label transport-icon" viewBox="0 0 28 18" aria-hidden="true"><path d="M3 3l10 6-10 6zM17 3h3v12h-3zm6 0h3v12h-3z"/></svg></button>
+          <button id="button-center" type="button" aria-label="Select"></button>
         </div>
       </div>
-      <ul id="list"></ul>
-      <div id="nowplaying">
-        <div id="np-top-section">
-          <img id="np-album-art" src="" alt="Album Art" />
-          <div id="np-text-info">
-            <h3 id="np-title"></h3>
-            <p id="np-artist"></p>
-          </div>
-        </div>
-        <div id="progress-container">
-          <span id="current-time">0:00</span>
-          <div id="progress-bar">
-            <div id="progress-bar-fill"></div>
-          </div>
-          <span id="remaining-time">-0:00</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="wheel">
-      <!-- rotation surface -->
-      <div id="wheel-overlay"></div>
-
-      <!-- labels -->
-      <div id="label-menu" class="label">MENU</div>
-      <div id="label-prev" class="label">&#9664;&#9664;</div>
-      <div id="label-next" class="label">&#9654;&#9654;</div>
-      <div id="label-play" class="label">&#9654;&#10074;&#10074;</div>
-
-      <!-- hot‑zones -->
-      <div id="hot-menu" class="hot"></div>
-      <div id="hot-prev" class="hot"></div>
-      <div id="hot-next" class="hot"></div>
-      <div id="hot-play" class="hot"></div>
-
-      <!-- center button -->
-      <div id="button-center"></div>
-    </div>
-  </div>
-
-  <!-- audio element -->
-  <audio id="audio"></audio>
-
-  <!-- external script -->
-  <script src="js/script.js"></script>
+    </section>
+  </main>
+  <div id="status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+  <audio id="audio" preload="metadata"></audio>
+  <noscript><p class="noscript-note">Enable JavaScript to use the music player.</p></noscript>
 </body>
 </html>
