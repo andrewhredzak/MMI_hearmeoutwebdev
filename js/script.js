@@ -27,7 +27,6 @@
   try { saved = JSON.parse(localStorage.getItem(storageKey)) || {}; } catch { /* Storage is optional. */ }
   let repeat = ['Off', 'All', 'One'].includes(saved.repeat) ? saved.repeat : 'Off';
   let shuffle = saved.shuffle === true;
-  let clicker = saved.clicker !== false;
   let songIndex = -1;
   let queue = sequence();
   let cursor = 0;
@@ -43,7 +42,6 @@
   let resumeTime = null;
   let noticeTimer;
   let adjustmentTimer;
-  let clickContext;
   let gesture = null;
   let suppressClickUntil = 0;
   let suppressClickButton = '';
@@ -58,7 +56,7 @@
 
   function save() {
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ volume: audio.volume, repeat, shuffle, clicker,
+      localStorage.setItem(storageKey, JSON.stringify({ volume: audio.volume, repeat, shuffle,
         track: songIndex, time: seeking ? seekTime : resumeTime ?? audio.currentTime }));
     } catch { /* Private browsing and disabled storage still support playback. */ }
   }
@@ -69,24 +67,6 @@
     announce(message);
     clearTimeout(noticeTimer);
     noticeTimer = setTimeout(() => { $('screen-message').hidden = true; }, 1800);
-  }
-  function tick() {
-    if (!clicker) return;
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      clickContext ||= new AudioContext();
-      if (clickContext.state === 'suspended') void clickContext.resume().catch(() => {});
-      const oscillator = clickContext.createOscillator();
-      const gain = clickContext.createGain();
-      oscillator.type = 'square';
-      oscillator.frequency.value = 1050;
-      gain.gain.setValueAtTime(0.012, clickContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, clickContext.currentTime + 0.012);
-      oscillator.connect(gain).connect(clickContext.destination);
-      oscillator.start();
-      oscillator.stop(clickContext.currentTime + 0.014);
-    } catch { /* Click feedback must never prevent a control action. */ }
   }
   function menuItems(view = current().view) {
     switch (view) {
@@ -107,7 +87,6 @@
       case 'settings': return [
         { label: 'Shuffle', detail: shuffle ? 'Songs' : 'Off', action: 'shuffle' },
         { label: 'Repeat', detail: repeat, action: 'repeat' },
-        { label: 'Clicker', detail: clicker ? 'On' : 'Off', action: 'clicker' },
       ];
       default: return [];
     }
@@ -285,7 +264,6 @@
     loadTrack(queue[(next + queue.length) % queue.length], shouldPlay);
   }
   function select() {
-    tick();
     if (current().view === 'nowplaying') {
       if (seeking) { commitSeek(); render(); }
       else if (duration()) {
@@ -305,13 +283,11 @@
       case 'shufflePlay': shuffle = true; startTrack(Math.floor(Math.random() * tracks.length)); break;
       case 'shuffle': shuffle = !shuffle; makeQueue(songIndex >= 0 ? songIndex : 0); break;
       case 'repeat': repeat = ['Off', 'All', 'One'][(['Off', 'All', 'One'].indexOf(repeat) + 1) % 3]; break;
-      case 'clicker': clicker = !clicker; break;
     }
     save();
     render();
   }
   function back() {
-    tick();
     if (seeking) { commitSeek(); render(); return; }
     if (stack.length > 1) stack.pop();
     render();
@@ -348,7 +324,6 @@
       render();
       if (wasFocused) list.querySelector('.active')?.focus({ preventScroll: true });
     }
-    tick();
   }
   function act(action) {
     if (sleeping) {
